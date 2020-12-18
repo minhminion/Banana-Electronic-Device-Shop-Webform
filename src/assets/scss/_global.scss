@@ -1,0 +1,120 @@
+.button {
+  display: flex !important;
+  background: none;
+  border: none;
+  background-color: $theme-color !important;
+  color: #fff !important;
+  height: auto;
+  min-width: 100px;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 1px;
+  line-height: 1;
+  padding: 18px 20px;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 50px;
+  z-index: 9;
+  &:hover {
+    background-color: #333 !important;
+  }
+  &.ant-btn-loading .anticon-loading {
+    margin: 0;
+    margin-right: 10px;
+  }
+}
+
+input {
+  height: auto;
+}
+
+svg {
+  vertical-align: initial !important;
+}
+
+// ================ Loading Progress Bar ===================
+.loading-progress-bar {
+  z-index: 999999;
+  height: 5px;
+  position: fixed;
+  width: '100%';
+  background-color: $theme-color;
+}
+
+// ================ Custom Button ===================
+.iconButton{
+  width: 56px;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 24px;
+  margin: 0 10px;
+  cursor: pointer;
+  &.activated{
+    &:hover {
+      .iconFont {
+        background-color: rgba(255,255,255,1);
+        color: $red-color;
+        &::after {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    }
+    & + .iconButton {
+      margin-left: 8px;
+    }
+  
+    .iconFont {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255,255,255,0.15);
+      transition-property: background-color, color;
+      transition-duration: 0.2s, 0.2s;
+      transition-timing-function: ease, ease;
+      transition-delay: 0s, 0s;
+      color: #fff;
+      font-size: 24px;
+      &::after{
+        position: absolute;
+        content: " ";
+        top: -3px;
+        left: -3px;
+        padding: 7px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        box-shadow: 0 0 0 3px #fff;
+        transition-property: transform, opacity;
+        transition-duration: 0.2s, 0.2s;
+        transition-timing-function: ease, ease;
+        transition-delay: 0s, 0s;
+        transform: scale(.8);
+        opacity: 0;
+      }
+    }
+  } 
+  &.primary {
+    .iconFont {
+      color: rgba(0, 0, 0, 0.85);
+      &::after{
+        box-shadow: 0 0 0 3px $red-color;
+      }
+    }
+    &:hover {
+      .iconFont {
+        background-color: $red-color;
+        color: white;
+      }
+    }
+  }
+  .iconFont.level-3 {
+    font-size: 18px;
+  }
+}

@@ -1,0 +1,9 @@
+.order-progress {
+    .ant-progress-steps-outer{
+        height: 50px;
+        .ant-progress-steps-item {
+            height: 15px !important;
+            width: 25px !important;
+        }
+    }
+}
