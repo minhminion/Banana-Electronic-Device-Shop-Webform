@@ -1,20 +1,21 @@
 import React, { Fragment, useState, useEffect, useMemo } from "react";
 import MetaTags from "react-meta-tags";
-import Paginator from "react-hooks-paginator";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 
 import Breadcrumb from "../../common/wrappers/Breadcrumb";
 // import { animateScroll } from "react-scroll";
 import { useDispatch, useSelector } from "react-redux";
 import { MODULE_NAME } from "./constants/models";
-import { useLocation } from "react-router-dom";
-import { getQuery } from "../../common/helpers";
+import { useHistory, useLocation } from "react-router-dom";
+import { getQuery, objectToQueryString } from "../../common/helpers";
 import ShopTopbar from "../../common/wrappers/ShopTopbar";
 import ShopSidebar from "../../common/wrappers/ShopSidebar";
+import ShopProducts from "../../common/wrappers/ShopProducts";
 import handler from "./constants/handler";
 
 const ProductList = (props) => {
   const location = useLocation();
+  const history = useHistory();
 
   const [layout, setLayout] = useState("grid three-column");
   const [filter, setFilter] = useState({
@@ -29,7 +30,7 @@ const ProductList = (props) => {
   );
 
   const {
-    data: { data, currentPage, totalPages, totalItems },
+    data: { data: productsData, currentPage, totalPages, totalItems },
     categories: { data: categoriesData },
   } = useSelector((state) => state[MODULE_NAME]);
 
@@ -37,17 +38,60 @@ const ProductList = (props) => {
     getProductCategories();
   }, []);
 
+  useEffect(() => {
+    if (location.search) {
+      setFilter((prev) => ({
+        ...getQuery(location.search),
+      }));
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (filter) {
+      fetchProduct({
+        ...filter,
+        limit: 8,
+      });
+    }
+  }, [filter]);
+
   const { pathname } = location;
 
   const getSortParams = (sortValue) => {
-    // setParams((prev) => ({
-    //   ...prev,
-    //   CategoryIds: sortValue[0],
-    // }));
+    handleFilter({
+      target: {
+        name: "categoryId",
+        value: sortValue[0] || 0,
+      },
+    });
   };
 
   const getLayout = (layout) => {
     setLayout(layout);
+  };
+
+  const handleFilter = (e, condition = "=") => {
+    const { name, value } = e.target;
+    console.log('======== Bao Minh ~ file: ProductList.jsx ~ line 75 ~ handleFilter ~ value ', value )
+    let newFilter = filter;
+    let extendFilter = {};
+    if (value === 0) {
+      delete newFilter[`filters[${name}]`];
+      delete newFilter[`filterConditions[${name}]`];
+    } else {
+      extendFilter = {
+        [`filters[${name}]`]: value,
+        [`filterConditions[${name}]`]: "=",
+      };
+    }
+    history.push({
+      pathname: location.pathname,
+      search: `?${objectToQueryString({
+        ...newFilter,
+        page: 1,
+        ...extendFilter,
+      })}`,
+    });
   };
 
   return (
@@ -89,7 +133,7 @@ const ProductList = (props) => {
               />
 
               {/* shop page content default */}
-              {/* <ShopProducts layout={layout} products={products} /> */}
+              <ShopProducts layout={layout} products={productsData || []} />
 
               {/* shop product pagination */}
               <div className="pro-pagination-style text-center mt-30">

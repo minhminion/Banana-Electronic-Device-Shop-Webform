@@ -2,11 +2,9 @@ import PropTypes from "prop-types";
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import { defaultCurrency } from "../../helpers/product";
-import ProductModal from "./ProductModal";
-import { multilanguage } from "redux-multilanguage";
+// import ProductModal from "./ProductModal";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
-import { ENUMS } from "../../../constant";
-import { DEFAULT_IMG_URL } from "../../configs";
+import { DEFAULT_IMG_URL } from "../../../config";
 import { Space, Rate } from "antd";
 
 const ProductGridListSingle = ({
@@ -20,21 +18,12 @@ const ProductGridListSingle = ({
   wishlistItem,
   sliderClassName,
   spaceBottomClass,
-  strings,
 }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const rating = Math.round(
     (product.productTier1AverageRate + product.productTier2AverageRate) / 2
   );
-
-  // THIS GET DISCOUNT BY %
-  // const discountedPrice = getDiscountPrice(product.salePrice, product.price);
-  const discountedPrice = product.salePrice;
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
-  const finalDiscountedPrice = +(
-    discountedPrice * currency.currencyRate
-  ).toFixed(2);
 
   return (
     <Fragment key={key}>
@@ -101,44 +90,7 @@ const ProductGridListSingle = ({
                 </button>
               </div>
               <div className="pro-same-action pro-cart">
-                {product.productTiers &&
-                product.productTiers.length &&
-                product.productTiers[0] &&
-                product.productTiers[0].quantity &&
-                product.productTiers[0].quantity > 0 ? (
-                  <button
-                    key={product.productTiers[0].id}
-                    onClick={() =>
-                      addToCart(product, 1, cartId, product.productTiers[0].id)
-                    }
-                    className={
-                      cartItem !== undefined && cartItem.quantity > 0
-                        ? "active"
-                        : ""
-                    }
-                    disabled={cartItem !== undefined && cartItem.quantity > 0}
-                    title={
-                      cartItem !== undefined
-                        ? "Added to cart"
-                        : strings["add_to_cart"]
-                    }
-                  >
-                    {" "}
-                    <i className="pe-7s-cart"></i>{" "}
-                    {cartItem !== undefined && cartItem.quantity > 0
-                      ? strings["added_to_cart"]
-                      : strings["add_to_cart"]}
-                  </button>
-                ) : (
-                  <button
-                    key={product.productTiers[0].id}
-                    disabled
-                    className="active"
-                  >
-                    {strings["out_of_stock"]}
-                  </button>
-                )}
-                {/* {product.quantity && product.quantity > 0 ? (
+                {product.quantity && product.quantity > 0 ? (
                   <button
                     onClick={() => addToCart(product, 1, cartId)}
                     className={
@@ -150,20 +102,20 @@ const ProductGridListSingle = ({
                     title={
                       cartItem !== undefined
                         ? "Added to cart"
-                        : strings["add_to_cart"]
+                        : "Thêm vào giỏi"
                     }
                   >
                     {" "}
                     <i className="pe-7s-cart"></i>{" "}
                     {cartItem !== undefined && cartItem.quantity > 0
-                      ? strings["added_to_cart"]
-                      : strings["add_to_cart"]}
+                      ? "Đã thêm vào giỏi"
+                      : "Thêm vào giỏi"}
                   </button>
                 ) : (
                   <button disabled className="active">
-                    {strings["out_of_stock"]}
+                    Hết hàng
                   </button>
-                )} */}
+                )}
               </div>
               <div className="pro-same-action pro-quickview">
                 <button onClick={() => setModalShow(true)} title="Quick View">
@@ -192,34 +144,13 @@ const ProductGridListSingle = ({
                 product.productTiers.length &&
                 product.productTiers.map((productTier) => (
                   <div key={productTier.id}>
-                    <span> Loại {productTier.tierId}:</span>
+                    <span> Loại sản phẩm:</span>
                     {productTier.discountPercentage > 0 ? (
                       <Fragment>
-                        <span className="old">
-                          {defaultCurrency(currency, productTier.salePrice)}
-                        </span>{" "}
-                        <span>
-                          {`${defaultCurrency(
-                            currency,
-                            productTier.afterDiscountPrice
-                          )} / ${
-                            ENUMS.ProductUnit.find(
-                              (item) => item.id === product.productUnit
-                            ).content
-                          }`}
-                        </span>
+                        <span className="old">10000</span> <span>100000</span>
                       </Fragment>
                     ) : (
-                      <span>
-                        {`${defaultCurrency(
-                          currency,
-                          productTier.afterDiscountPrice
-                        )} / ${
-                          ENUMS.ProductUnit.find(
-                            (item) => item.id === product.productUnit
-                          ).content
-                        }`}
-                      </span>
+                      <span>10000</span>
                     )}
                   </div>
                 ))}
@@ -293,34 +224,11 @@ const ProductGridListSingle = ({
                           <span> Loại {productTier.tierId}:</span>
                           {productTier.discountPercentage > 0 ? (
                             <Fragment>
-                              <span className="old">
-                                {defaultCurrency(
-                                  currency,
-                                  productTier.salePrice
-                                )}
-                              </span>{" "}
-                              <span>
-                                {`${defaultCurrency(
-                                  currency,
-                                  productTier.afterDiscountPrice
-                                )} / ${
-                                  ENUMS.ProductUnit.find(
-                                    (item) => item.id === product.productUnit
-                                  ).content
-                                }`}
-                              </span>
+                              <span className="old">100000</span>{" "}
+                              <span>10000</span>
                             </Fragment>
                           ) : (
-                            <span>
-                              {`${defaultCurrency(
-                                currency,
-                                productTier.afterDiscountPrice
-                              )} / ${
-                                ENUMS.ProductUnit.find(
-                                  (item) => item.id === product.productUnit
-                                ).content
-                              }`}
-                            </span>
+                            <span>100000</span>
                           )}
                         </div>
                       ))}
@@ -343,49 +251,40 @@ const ProductGridListSingle = ({
 
                 <div className="shop-list-actions d-flex align-items-center">
                   <div className="shop-list-btn btn-hover">
-                    {product.productTiers && product.productTiers.length ? (
-                      <>
-                        {product.productTiers[0].quantity &&
-                        product.productTiers[0].quantity > 0 ? (
-                          <button
-                            key={product.productTiers[0].tierId}
-                            onClick={() =>
-                              addToCart(
-                                product,
-                                1,
-                                cartId,
-                                product.productTiers[0].id
-                              )
-                            }
-                            className={
-                              cartItem !== undefined && cartItem.quantity > 0
-                                ? "active"
-                                : ""
-                            }
-                            disabled={
-                              cartItem !== undefined && cartItem.quantity > 0
-                            }
-                            title={
-                              cartItem !== undefined
-                                ? "Added to cart"
-                                : strings["add_to_cart"]
-                            }
-                          >
-                            {" "}
-                            <i className="pe-7s-cart"></i>{" "}
-                            {cartItem !== undefined && cartItem.quantity > 0
-                              ? strings["added_to_cart"]
-                              : strings["add_to_cart"]}
-                          </button>
-                        ) : (
-                          <button disabled className="active">
-                            {strings["out_of_stock"]}
-                          </button>
-                        )}
-                      </>
+                    {product.quantity && product.quantity > 0 ? (
+                      <button
+                        key={product.id}
+                        onClick={() =>
+                          addToCart(
+                            product,
+                            1,
+                            cartId,
+                            product.productTiers[0].id
+                          )
+                        }
+                        className={
+                          cartItem !== undefined && cartItem.quantity > 0
+                            ? "active"
+                            : ""
+                        }
+                        disabled={
+                          cartItem !== undefined && cartItem.quantity > 0
+                        }
+                        title={
+                          cartItem !== undefined
+                            ? "Added to cart"
+                            : "Thêm vào giỏi"
+                        }
+                      >
+                        {" "}
+                        <i className="pe-7s-cart"></i>{" "}
+                        {cartItem !== undefined && cartItem.quantity > 0
+                          ? "Đã thêm vào giỏi"
+                          : "Thêm vào giỏi"}
+                      </button>
                     ) : (
                       <button disabled className="active">
-                        {strings["out_of_stock"]}
+                        Hết hàng
                       </button>
                     )}
                   </div>
@@ -414,7 +313,7 @@ const ProductGridListSingle = ({
         </div>
       </div>
       {/* product modal */}
-      <ProductModal
+      {/* <ProductModal
         show={modalShow}
         onHide={() => setModalShow(false)}
         product={product}
@@ -426,7 +325,7 @@ const ProductGridListSingle = ({
         wishlistitem={wishlistItem}
         addtocart={addToCart}
         addtowishlist={addToWishlist}
-      />
+      /> */}
     </Fragment>
   );
 };
@@ -442,4 +341,4 @@ ProductGridListSingle.propTypes = {
   wishlistItem: PropTypes.object,
   strings: PropTypes.object,
 };
-export default multilanguage(ProductGridListSingle);
+export default ProductGridListSingle;
