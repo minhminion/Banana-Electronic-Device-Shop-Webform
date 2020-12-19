@@ -29,13 +29,13 @@ const LoginRegister = (props) => {
       <MetaTags>
         <title>{`Banana Boys | Login`}</title>
       </MetaTags>
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
       <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
         Login Register
-      </BreadcrumbsItem> */}
+      </BreadcrumbsItem>
         {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
-        <div className="login-register-area pb-100">
+        <Breadcrumb />
+        <div className="login-register-area pb-100 mt-3">
           <div className="container">
             <div className="row">
               <div className="login-register-wrapper">

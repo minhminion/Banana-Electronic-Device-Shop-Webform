@@ -7,9 +7,7 @@ const initialState = {
   isEmpty: false,
   error: null,
   data: {},
-  filter: {
-    isAscending: false,
-  },
+  categories: [],
 };
 
 const handler = {
@@ -30,17 +28,11 @@ const handler = {
     error: action.payload,
   }),
 
-  [actions.setFilter]: (state, action) => ({
+  [actions.setCategories]: (state, action) => ({
     ...state,
-    filter: {
-      ...state.filter,
-      ...action.payload,
-    },
-  }),
-  [actions.resetFilter]: (state, action) => ({
-    ...state,
-    filter: initialState.filter,
-  }),
+    categories: action.payload
+  })
+
 };
 
 export default handleActions(handler, initialState);

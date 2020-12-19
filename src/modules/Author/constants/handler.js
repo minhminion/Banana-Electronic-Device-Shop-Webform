@@ -54,6 +54,9 @@ const handler = (dispatch, props) => ({
       }
     }
   },
+  logout: {
+    
+  }
 });
 
 export default handler;

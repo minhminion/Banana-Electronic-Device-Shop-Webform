@@ -1,22 +1,20 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useMemo } from "react";
 import MetaTags from "react-meta-tags";
 import Paginator from "react-hooks-paginator";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 
-import Breadcrumb from "../../../../wrappers/Breadcrumb";
+import Breadcrumb from "../../common/wrappers/Breadcrumb";
 // import { animateScroll } from "react-scroll";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MODULE_NAME } from "./constants/models";
 import { useLocation } from "react-router-dom";
-import { getQuery } from "../../common/helper";
+import { getQuery } from "../../common/helpers";
 import ShopTopbar from "../../common/wrappers/ShopTopbar";
+import ShopSidebar from "../../common/wrappers/ShopSidebar";
+import handler from "./constants/handler";
 
-const ProductList = ({
-  strings,
-  getAllProducts,
-  getCategories,
-}) => {
-  const location = useLocation()
+const ProductList = (props) => {
+  const location = useLocation();
 
   const [layout, setLayout] = useState("grid three-column");
   const [filter, setFilter] = useState({
@@ -24,13 +22,29 @@ const ProductList = ({
     ...getQuery(location.search),
   });
 
-  const { data, currentPage, totalPages, totalItems } = useSelector(
-    (state) => state[MODULE_NAME].data
+  const dispatch = useDispatch();
+  const { getProductCategories, fetchProduct } = useMemo(
+    () => handler(dispatch, props),
+    [props, dispatch]
   );
+
+  const {
+    data: { data, currentPage, totalPages, totalItems },
+    categories: { data: categoriesData },
+  } = useSelector((state) => state[MODULE_NAME]);
+
+  useEffect(() => {
+    getProductCategories();
+  }, []);
 
   const { pathname } = location;
 
-  
+  const getSortParams = (sortValue) => {
+    // setParams((prev) => ({
+    //   ...prev,
+    //   CategoryIds: sortValue[0],
+    // }));
+  };
 
   const getLayout = (layout) => {
     setLayout(layout);
@@ -49,37 +63,37 @@ const ProductList = ({
         Cửa hàng
       </BreadcrumbsItem>
 
-        {/* breadcrumb */}
-        <Breadcrumb />
+      {/* breadcrumb */}
+      <Breadcrumb />
 
-        <div className="shop-area pt-95 pb-100">
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-3 order-2 order-lg-1">
-                {/* shop sidebar */}
-                {/* <ShopSidebar
-                  categories={categories}
-                  sideSpaceClass="mr-30"
-                  getSearchByName={getSearchByName}
-                  getSortParams={getSortParams}
-                  getFilterTierPrice={getFilterTierPrice}
-                /> */}
-              </div>
-              <div className="col-lg-9 order-1 order-lg-2">
-                {/* shop topbar default */}
-                <ShopTopbar
-                  getLayout={getLayout}
-                  productCount={totalPages}
-                  // getFilterSortParams={getFilterSortParams}
-                  // sortedProductCount={currentData.length}
-                />
+      <div className="shop-area pt-95 pb-100">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3 order-2 order-lg-1">
+              {/* shop sidebar */}
+              <ShopSidebar
+                categories={categoriesData}
+                sideSpaceClass="mr-30"
+                // getSearchByName={getSearchByName}
+                getSortParams={getSortParams}
+                // getFilterTierPrice={getFilterTierPrice}
+              />
+            </div>
+            <div className="col-lg-9 order-1 order-lg-2">
+              {/* shop topbar default */}
+              <ShopTopbar
+                getLayout={getLayout}
+                productCount={totalPages}
+                // getFilterSortParams={getFilterSortParams}
+                // sortedProductCount={currentData.length}
+              />
 
-                {/* shop page content default */}
-                {/* <ShopProducts layout={layout} products={products} /> */}
+              {/* shop page content default */}
+              {/* <ShopProducts layout={layout} products={products} /> */}
 
-                {/* shop product pagination */}
-                <div className="pro-pagination-style text-center mt-30">
-                  {/* <Paginator
+              {/* shop product pagination */}
+              <div className="pro-pagination-style text-center mt-30">
+                {/* <Paginator
                     offset={pagination.offset}
                     totalRecords={pagination.total}
                     pageLimit={params.pageSize}
@@ -96,14 +110,13 @@ const ProductList = ({
                     pagePrevText="«"
                     pageNextText="»"
                   /> */}
-                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
     </Fragment>
   );
 };
-
 
 export default ProductList;

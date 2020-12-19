@@ -2,12 +2,12 @@ import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import { setActiveSort } from "../../helpers/product";
 import { Form, InputNumber, Button, Space, Typography } from "antd";
-import { useForm } from "antd/lib/form/util";
+// import { useForm } from "antd/lib/form/util";
 
 const { Text } = Typography;
 
 const ShopTierPrice = ({ getFilterTierPrice }) => {
-  const [form] = useForm();
+  const [form] = Form.useForm();
 
   const onFinish = (values) => {
     getFilterTierPrice(values);

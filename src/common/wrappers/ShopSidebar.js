@@ -18,7 +18,7 @@ const ShopSidebar = ({ getSortParams, sideSpaceClass, categories, getSearchByNam
       />
 
       {/* filter by price */}
-      <ShopTierPrice getFilterTierPrice={getFilterTierPrice}/>
+      {/* <ShopTierPrice getFilterTierPrice={getFilterTierPrice}/> */}
 
       {/* filter by tag */}
       {/* <ShopTag tags={uniqueTags} getSortParams={getSortParams} /> */}
