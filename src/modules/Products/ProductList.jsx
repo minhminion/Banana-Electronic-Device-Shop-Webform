@@ -3,15 +3,20 @@ import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 
 import Breadcrumb from "../../common/wrappers/Breadcrumb";
+import Paginator from "react-hooks-paginator";
 // import { animateScroll } from "react-scroll";
 import { useDispatch, useSelector } from "react-redux";
 import { MODULE_NAME } from "./constants/models";
+import { MODULE_NAME as MODULE_CART } from "../Carts/constants/models";
 import { useHistory, useLocation } from "react-router-dom";
 import { getQuery, objectToQueryString } from "../../common/helpers";
 import ShopTopbar from "../../common/wrappers/ShopTopbar";
 import ShopSidebar from "../../common/wrappers/ShopSidebar";
 import ShopProducts from "../../common/wrappers/ShopProducts";
 import handler from "./constants/handler";
+import { animateScroll } from "react-scroll";
+
+const LIMIT_PER_PAGE = 8
 
 const ProductList = (props) => {
   const location = useLocation();
@@ -30,9 +35,10 @@ const ProductList = (props) => {
   );
 
   const {
-    data: { data: productsData, currentPage, totalPages, totalItems },
+    data: { data: productsData, currentPage, totalPages, totalItems = 0 },
     categories: { data: categoriesData },
   } = useSelector((state) => state[MODULE_NAME]);
+  const cartData = useSelector((state) => state[MODULE_CART]);
 
   useEffect(() => {
     getProductCategories();
@@ -50,7 +56,7 @@ const ProductList = (props) => {
     if (filter) {
       fetchProduct({
         ...filter,
-        limit: 8,
+        limit: LIMIT_PER_PAGE,
       });
     }
   }, [filter]);
@@ -70,9 +76,20 @@ const ProductList = (props) => {
     setLayout(layout);
   };
 
+
+  const handlePagination = (newPage) => {
+    history.push({
+      pathname: location.pathname,
+      search: `?${objectToQueryString({
+        ...filter,
+        page: newPage,
+      })}`,
+    });
+    animateScroll.scrollTo(200);
+  };
+
   const handleFilter = (e, condition = "=") => {
     const { name, value } = e.target;
-    console.log('======== Bao Minh ~ file: ProductList.jsx ~ line 75 ~ handleFilter ~ value ', value )
     let newFilter = filter;
     let extendFilter = {};
     if (value === 0) {
@@ -133,27 +150,24 @@ const ProductList = (props) => {
               />
 
               {/* shop page content default */}
-              <ShopProducts layout={layout} products={productsData || []} />
+              <ShopProducts layout={layout} products={productsData || []} carts={cartData}/>
 
               {/* shop product pagination */}
               <div className="pro-pagination-style text-center mt-30">
-                {/* <Paginator
-                    offset={pagination.offset}
-                    totalRecords={pagination.total}
-                    pageLimit={params.pageSize}
+                <Paginator
+                    offset={3}
+                    totalRecords={totalItems}
+                    pageLimit={LIMIT_PER_PAGE}
                     setOffset={(value) =>
-                      setPagination((prev) => ({
-                        ...prev,
-                        offset: value,
-                      }))
+                      console.log(value)
                     }
                     pageNeighbours={2}
-                    currentPage={pagination.current}
+                    currentPage={currentPage}
                     setCurrentPage={handlePagination}
                     pageContainerClass="mb-0 mt-0"
                     pagePrevText="«"
                     pageNextText="»"
-                  /> */}
+                  />
               </div>
             </div>
           </div>

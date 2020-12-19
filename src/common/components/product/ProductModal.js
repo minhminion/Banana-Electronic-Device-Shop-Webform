@@ -1,106 +1,37 @@
-import PropTypes from "prop-types";
-import React, { Fragment, useState, useEffect } from "react";
-import Swiper from "react-id-swiper";
-import { getProductCartQuantity, defaultCurrency } from "../../helpers/product";
+import React, { Fragment, useState } from "react";
+import { getProductCartQuantity } from "../../helpers/product";
 import { Modal } from "react-bootstrap";
-import Rating from "./sub-components/ProductRating";
-import { connect, useSelector } from "react-redux";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
-import { ENUMS } from "../../../constant";
-import { multilanguage } from "redux-multilanguage";
-import { DEFAULT_IMG_URL } from "../../configs";
-import { Checkbox, Space, Rate } from "antd";
+import { Space } from "antd";
+import { formatNumberToVND } from "../../helpers";
+import { MODULE_NAME as MODULE_CART } from "../../../modules/Carts/constants/models";
+import { useDispatch, useSelector } from "react-redux";
+import handler from "../../../modules/Carts/constants/handlers";
+import { useMemo } from "react";
 
 function ProductModal({
   product,
-  currency,
-  discountedprice,
-  finaldiscountedprice,
-  finalproductprice,
-  strings,
   wishlistItem,
-  addtocart,
   ...props
 }) {
-  const cartId = useSelector((state) =>
-    state.user.user && state.user.user.customer
-      ? state.user.user.customer.cart.id
-      : null
-  );
+  const dispatch = useDispatch()
 
-  const rating = Math.round((product.productTier1AverageRate+product.productTier2AverageRate)/2)
-
-  const [gallerySwiper, getGallerySwiper] = useState(null);
-  const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
   const [quantityCount, setQuantityCount] = useState(1);
+  const { addToCart } = useMemo(() => handler(dispatch, props) ,[dispatch, props])
 
-  const [selectedTier, setSelectedTier] = useState(product.productTiers[0].id);
-  const [productQuantity, setProductStock] = useState(
-    product.productTiers ? product.productTiers[0].quantity : 1
-  );
 
-  const addToCart = (product, quantityCount, cartId, selectedTier) => {
+  const cartItems = useSelector(state => state[MODULE_CART ])
+
+
+
+  const handleAddToCart = (product, quantityCount, cartId, selectedTier) => {
     setQuantityCount(1);
-    addtocart(product, quantityCount, cartId, selectedTier);
+    addToCart(product, quantityCount);
     props.onHide();
   };
   const addToWishlist = props.addtowishlist;
 
-  const cartItems = props.cartitems;
-
   const productCartQty = getProductCartQuantity(cartItems, product);
-
-  const handleSelectTier = (e) => {
-    setSelectedTier(e.target.value);
-    setProductStock(
-      product.productTiers &&
-        product.productTiers.find((item) => item.id === e.target.value).quantity
-    );
-  };
-
-  useEffect(() => {
-    if (
-      gallerySwiper !== null &&
-      gallerySwiper.controller &&
-      thumbnailSwiper !== null &&
-      thumbnailSwiper.controller
-    ) {
-      gallerySwiper.controller.control = thumbnailSwiper;
-      thumbnailSwiper.controller.control = gallerySwiper;
-    }
-  }, [gallerySwiper, thumbnailSwiper]);
-
-  const gallerySwiperParams = {
-    getSwiper: getGallerySwiper,
-    spaceBetween: 10,
-    loopedSlides: 4,
-    loop: true,
-  };
-
-  const thumbnailSwiperParams = {
-    getSwiper: getThumbnailSwiper,
-    spaceBetween: 10,
-    slidesPerView: 4,
-    loopedSlides: 4,
-    touchRatio: 0.2,
-    freeMode: true,
-    loop: true,
-    slideToClickedSlide: true,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    renderPrevButton: () => (
-      <button className="swiper-button-prev ht-swiper-button-nav">
-        <i className="pe-7s-angle-left" />
-      </button>
-    ),
-    renderNextButton: () => (
-      <button className="swiper-button-next ht-swiper-button-nav">
-        <i className="pe-7s-angle-right" />
-      </button>
-    ),
-  };
 
   return (
     <Fragment>
@@ -115,64 +46,15 @@ function ProductModal({
           <div className="row">
             <div className="col-md-5 col-sm-12 col-xs-12">
               <div className="product-large-image-wrapper">
-                <Swiper {...gallerySwiperParams}>
-                  {product.productImages && product.productImages.length ? (
-                    product.productImages.map((single, key) => {
-                      return (
-                        <div key={key}>
-                          <div className="single-image">
-                            <img
-                              src={
-                                single && single.imgLocation
-                                  ? DEFAULT_IMG_URL +
-                                    single.imgLocation.replace("\\", "/")
-                                  : process.env.PUBLIC_URL +
-                                    "/img/products/3.jpg"
-                              }
-                              className="img-fluid"
-                              alt=""
-                            />
-                          </div>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div key={1}>
-                      <div className="single-image">
-                        <img
-                          src={process.env.PUBLIC_URL + "/img/products/3.jpg"}
-                          className="img-fluid"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                  )}
-                </Swiper>
-              </div>
-              <div className="product-small-image-wrapper mt-15">
-                <Swiper {...thumbnailSwiperParams}>
-                  {product.productImages && product.productImages.length
-                    ? product.productImages.map((single, key) => {
-                        return (
-                          <div key={key}>
-                            <div className="single-image">
-                              <img
-                                src={
-                                  single && single.imgLocation
-                                    ? DEFAULT_IMG_URL +
-                                      single.imgLocation.replace("\\", "/")
-                                    : process.env.PUBLIC_URL +
-                                      "/img/products/3.jpg"
-                                }
-                                className="img-fluid"
-                                alt=""
-                              />
-                            </div>
-                          </div>
-                        );
-                      })
-                    : null}
-                </Swiper>
+                <div key={1}>
+                  <div className="single-image">
+                    <img
+                      src={process.env.PUBLIC_URL + "/img/products/3.jpg"}
+                      className="img-fluid"
+                      alt=""
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="col-md-7 col-sm-12 col-xs-12">
@@ -180,49 +62,10 @@ function ProductModal({
                 <h2>{product.name}</h2>
                 <div className="product-details-price">
                   <Space direction="vertical">
-                    {product.productTiers &&
-                      product.productTiers.length &&
-                      product.productTiers.map((productTier) => (
-                        <div key={productTier.id}>
-                          <Checkbox
-                            value={productTier.id}
-                            checked={selectedTier === productTier.id}
-                            onChange={handleSelectTier}
-                          />
-                          <span> Loại {productTier.tierId}:</span>
-                          {productTier.discountPercentage > 0 ? (
-                            <>
-                              <span className="old">
-                                {defaultCurrency(
-                                  currency,
-                                  productTier.salePrice
-                                )}
-                              </span>
-                              <span>
-                                {`${defaultCurrency(
-                                  currency,
-                                  productTier.afterDiscountPrice
-                                )} / ${
-                                  ENUMS.ProductUnit.find(
-                                    (item) => item.id === product.productUnit
-                                  ).content
-                                }`}
-                              </span>
-                            </>
-                          ) : (
-                            <span>
-                              {`${defaultCurrency(
-                                currency,
-                                productTier.afterDiscountPrice
-                              )} / ${
-                                ENUMS.ProductUnit.find(
-                                  (item) => item.id === product.productUnit
-                                ).content
-                              }`}
-                            </span>
-                          )}
-                        </div>
-                      ))}
+                    <span> Loại {product.unit}:</span>
+                    <span>
+                     {formatNumberToVND(product.price)}đ
+                    </span>
                   </Space>
                 </div>
                 {/* {rating  >= 0 ? (
@@ -263,7 +106,7 @@ function ProductModal({
                       onClick={() =>
                         setQuantityCount(
                           quantityCount <
-                            Math.floor(productQuantity) - productCartQty
+                            Math.floor(product.quantity) - productCartQty
                             ? quantityCount + 1
                             : quantityCount
                         )
@@ -274,21 +117,19 @@ function ProductModal({
                     </button>
                   </div>
                   <div className="pro-details-cart btn-hover">
-                    {productQuantity && Math.floor(productQuantity) > 0 ? (
+                    {product.quantity && Math.floor(product.quantity) > 0 ? (
                       <button
                         onClick={() => {
-                          addToCart(
+                          handleAddToCart(
                             product,
                             quantityCount,
-                            cartId,
-                            selectedTier
                           );
                         }}
-                        disabled={productCartQty >= productQuantity}
+                        disabled={productCartQty >= product.quantity}
                       >
-                        {productCartQty >= productQuantity
-                          ? "Out of Stock"
-                          : strings["add_to_cart"]}
+                        {productCartQty >= product.quantity
+                          ? "Hết hàng"
+                          : "Thêm vào giỏ"}
                       </button>
                     ) : (
                       <button disabled>Out of Stock</button>
@@ -299,8 +140,8 @@ function ProductModal({
                       disabled={wishlistItem !== undefined}
                       title={
                         wishlistItem !== undefined
-                          ? "Added to wishlist"
-                          : "Add to wishlist"
+                          ? "Đã thêm vào giỏ"
+                          : "Thêm vào giỏ"
                       }
                       onClick={() => addToWishlist(product)}
                     >
@@ -321,27 +162,4 @@ function ProductModal({
   );
 }
 
-ProductModal.propTypes = {
-  addtoast: PropTypes.func,
-  addtocart: PropTypes.func,
-  addtocompare: PropTypes.func,
-  addtowishlist: PropTypes.func,
-  cartitems: PropTypes.array,
-  compareitem: PropTypes.object,
-  currency: PropTypes.object,
-  discountedprice: PropTypes.number,
-  finaldiscountedprice: PropTypes.number,
-  finalproductprice: PropTypes.number,
-  onHide: PropTypes.func,
-  product: PropTypes.object,
-  show: PropTypes.bool,
-  wishlistitem: PropTypes.object,
-};
-
-const mapStateToProps = (state) => {
-  return {
-    cartitems: state.cart,
-  };
-};
-
-export default connect(mapStateToProps)(multilanguage(ProductModal));
+export default ProductModal;

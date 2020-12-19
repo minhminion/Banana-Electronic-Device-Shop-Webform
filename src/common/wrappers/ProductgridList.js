@@ -27,9 +27,9 @@ const ProductGrid = ({
             currency={currency}
             addToCart={addToCart}
             addToWishlist={addToWishlist}
-            // cartItem={
-            //   cartItems.filter((cartItem) => cartItem.id === product.id)[0]
-            // }
+            cartItem={
+              cartItems.filter((cartItem) => cartItem.productId === product.id)[0]
+            }
             // wishlistItem={
             //   wishlistItems.filter((wishlistItem) => wishlistItem.productTierId === product.productTiers[0].id)[0]
             // }
