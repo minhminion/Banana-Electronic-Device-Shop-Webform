@@ -5,21 +5,22 @@ import { useDispatch, useSelector } from "react-redux";
 import MenuCart from "./sub-components/MenuCart";
 import { Typography } from "antd";
 import { MODULE_NAME as MODULE_AUTHOR } from "../../../modules/Author/constants/models";
+import { MODULE_NAME as MODULE_CART } from "../../../modules/Carts/constants/models";
 import { clearAll } from "../../redux/actions/uiActions";
 
 const { Text } = Typography;
 
 const IconGroup = ({
   currency,
-  cartData,
   wishlistData,
-  deleteFromCart,
   iconWhiteClass,
   user,
 }) => {
   const dispatch = useDispatch()
 
   const { isSigned, roleName, info } = useSelector((state) => state[MODULE_AUTHOR]);
+  
+  const cartData = useSelector(state => state[MODULE_CART])
 
   const signOut = () => {
     dispatch(clearAll())
@@ -102,7 +103,6 @@ const IconGroup = ({
           isSigned={isSigned}
           cartData={cartData}
           currency={currency}
-          deleteFromCart={deleteFromCart}
         />
       </div>
       <div className="same-style cart-wrap d-block d-lg-none">

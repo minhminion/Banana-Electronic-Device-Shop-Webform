@@ -173,8 +173,8 @@ const ProductDescriptionInfo = ({
             disabled={wishlistItem !== undefined}
             title={
               wishlistItem !== undefined
-                ? "Added to wishlist"
-                : "Add to wishlist"
+                ? "Đã thêm vào giỏ"
+                : "Thêm vào giỏ"
             }
             onClick={() => addToWishlist(product)}
           >

@@ -1,32 +1,39 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { defaultCurrency } from "../../helpers/product";
 // import ProductModal from "./ProductModal";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { DEFAULT_IMG_URL } from "../../../config";
 import { Space, Rate } from "antd";
+import { useDispatch } from "react-redux";
+import handler from "../../../modules/Carts/constants/handlers";
+import ProductModal from "./ProductModal";
+import { formatNumberToVND } from "../../helpers";
 
-const ProductGridListSingle = ({
-  key,
-  cartId,
-  product,
-  currency,
-  addToCart,
-  addToWishlist,
-  cartItem,
-  wishlistItem,
-  sliderClassName,
-  spaceBottomClass,
-}) => {
+const ProductGridListSingle = (props) => {
+  const {
+    cartId,
+    product,
+    currency,
+    addToWishlist,
+    cartItem,
+    wishlistItem,
+    sliderClassName,
+    spaceBottomClass,
+  } = props
   const [modalShow, setModalShow] = useState(false);
+  const dispatch = useDispatch()
 
   const rating = Math.round(
     (product.productTier1AverageRate + product.productTier2AverageRate) / 2
   );
 
+  const { addToCart } = useMemo(() => handler(dispatch, props), [props, dispatch]);
+
+
   return (
-    <Fragment key={key}>
+    <Fragment key={product.id}>
       <div
         className={`col-xl-4 col-sm-6 ${
           sliderClassName ? sliderClassName : ""
@@ -77,8 +84,8 @@ const ProductGridListSingle = ({
                   disabled={wishlistItem !== undefined}
                   title={
                     wishlistItem !== undefined
-                      ? "Added to wishlist"
-                      : "Add to wishlist"
+                      ? "Đã thêm vào giỏ"
+                      : "Thêm vào giỏ"
                   }
                   onClick={() => addToWishlist(product)}
                 >
@@ -102,14 +109,14 @@ const ProductGridListSingle = ({
                     title={
                       cartItem !== undefined
                         ? "Added to cart"
-                        : "Thêm vào giỏi"
+                        : "Thêm vào giỏ"
                     }
                   >
                     {" "}
                     <i className="pe-7s-cart"></i>{" "}
                     {cartItem !== undefined && cartItem.quantity > 0
-                      ? "Đã thêm vào giỏi"
-                      : "Thêm vào giỏi"}
+                      ? "Đã thêm vào giỏ"
+                      : "Thêm vào giỏ"}
                   </button>
                 ) : (
                   <button disabled className="active">
@@ -140,20 +147,7 @@ const ProductGridListSingle = ({
               </div>
             )} */}
             <div className="product-price">
-              {product.productTiers &&
-                product.productTiers.length &&
-                product.productTiers.map((productTier) => (
-                  <div key={productTier.id}>
-                    <span> Loại sản phẩm:</span>
-                    {productTier.discountPercentage > 0 ? (
-                      <Fragment>
-                        <span className="old">10000</span> <span>100000</span>
-                      </Fragment>
-                    ) : (
-                      <span>10000</span>
-                    )}
-                  </div>
-                ))}
+              <span>{`${formatNumberToVND(product.price)}đ`}</span>
             </div>
           </div>
         </div>
@@ -217,21 +211,7 @@ const ProductGridListSingle = ({
                 </h3>
                 <div className="product-list-price">
                   <Space direction="vertical">
-                    {product.productTiers &&
-                      product.productTiers.length &&
-                      product.productTiers.map((productTier) => (
-                        <div key={productTier.id}>
-                          <span> Loại {productTier.tierId}:</span>
-                          {productTier.discountPercentage > 0 ? (
-                            <Fragment>
-                              <span className="old">100000</span>{" "}
-                              <span>10000</span>
-                            </Fragment>
-                          ) : (
-                            <span>100000</span>
-                          )}
-                        </div>
-                      ))}
+                    <span>{`${formatNumberToVND(product.price)}đ`}</span>
                   </Space>
                 </div>
                 {/* {rating  >= 0 ? (
@@ -258,8 +238,6 @@ const ProductGridListSingle = ({
                           addToCart(
                             product,
                             1,
-                            cartId,
-                            product.productTiers[0].id
                           )
                         }
                         className={
@@ -273,14 +251,14 @@ const ProductGridListSingle = ({
                         title={
                           cartItem !== undefined
                             ? "Added to cart"
-                            : "Thêm vào giỏi"
+                            : "Thêm vào giỏ"
                         }
                       >
                         {" "}
                         <i className="pe-7s-cart"></i>{" "}
                         {cartItem !== undefined && cartItem.quantity > 0
-                          ? "Đã thêm vào giỏi"
-                          : "Thêm vào giỏi"}
+                          ? "Đã thêm vào giỏ"
+                          : "Thêm vào giỏ"}
                       </button>
                     ) : (
                       <button disabled className="active">
@@ -294,8 +272,8 @@ const ProductGridListSingle = ({
                       disabled={wishlistItem !== undefined}
                       title={
                         wishlistItem !== undefined
-                          ? "Added to wishlist"
-                          : "Add to wishlist"
+                          ? "Đã thêm vào giỏ"
+                          : "Thêm vào giỏ"
                       }
                       onClick={() => addToWishlist(product)}
                     >
@@ -313,19 +291,15 @@ const ProductGridListSingle = ({
         </div>
       </div>
       {/* product modal */}
-      {/* <ProductModal
+      <ProductModal
         show={modalShow}
         onHide={() => setModalShow(false)}
         product={product}
-        currency={currency}
-        discountedprice={discountedPrice}
-        finalproductprice={finalProductPrice}
-        finaldiscountedprice={finalDiscountedPrice}
-        cartitem={cartItem}
+        cartItem={cartItem}
         wishlistitem={wishlistItem}
         addtocart={addToCart}
         addtowishlist={addToWishlist}
-      /> */}
+      />
     </Fragment>
   );
 };

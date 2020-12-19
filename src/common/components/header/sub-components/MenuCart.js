@@ -1,19 +1,25 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { DEFAULT_IMG_URL } from "../../../../config";
+import handler from "../../../../modules/Carts/constants/handlers";
+import { formatNumberToVND } from "../../../helpers";
 
-const MenuCart = ({ cartData, currency, deleteFromCart, isSigned }) => {
+const MenuCart = (props) => {
   let cartTotalPrice = 0;
+  const { cartData, isSigned } = props
+  const dispatch = useDispatch()
 
+  // if (!isSigned) {
+  //   return (
+  //     <div className="shopping-cart-content">
+  //       <p className="text-center">Vui lòng đăng nhập</p>
+  //     </div>
+  //   );
+  // }
 
-  if (!isSigned) {
-    return (
-      <div className="shopping-cart-content">
-        <p className="text-center">Vui lòng đăng nhập</p>
-      </div>
-    );
-  }
+  const { deleteFromCart } = useMemo(() => handler(dispatch, props), [props, dispatch])
 
   return (
     <div className="shopping-cart-content">
@@ -21,8 +27,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, isSigned }) => {
         <Fragment>
           <ul>
             {cartData.map((single, key) => {
-              const finalDiscountedPrice =
-                single.afterDiscountPrice * currency.currencyRate;
+              const finalDiscountedPrice = single.product?.price
 
               cartTotalPrice += finalDiscountedPrice * single.quantity;
 
@@ -37,10 +42,9 @@ const MenuCart = ({ cartData, currency, deleteFromCart, isSigned }) => {
                       <img
                         alt=""
                         src={
-                          single.product.productImages &&
-                          single.product.productImages.length
+                          single.product?.productImages 
                             ? DEFAULT_IMG_URL +
-                              single.product.productImages[0].imgLocation.replace(
+                              single.product.productImages.replace(
                                 "\\",
                                 "/"
                               )
@@ -59,12 +63,12 @@ const MenuCart = ({ cartData, currency, deleteFromCart, isSigned }) => {
                           single.productId
                         }
                       >
-                        {`${single.product.name} - loại ${single.tierId}`}
+                        {`${single.product?.name}`}
                       </Link>
                     </h4>
                     <h6>Số lượng: {single.quantity}</h6>
                     <span>
-                      {finalDiscountedPrice}
+                      {`${formatNumberToVND(finalDiscountedPrice)}đ`}
                     </span>
                   </div>
                   <div className="shopping-cart-delete">
@@ -80,7 +84,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, isSigned }) => {
             <h4>
               Total :{" "}
               <span className="shop-total">
-                {cartTotalPrice}
+                {`${formatNumberToVND(cartTotalPrice)}đ`}
               </span>
             </h4>
           </div>
