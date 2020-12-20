@@ -53,11 +53,11 @@ const handler = {
   [actions.addAllToCard]: (state, action) => [...addAllToCard(action.payload)],
   [actions.addToCard]: (state, action) => [...addCard(state, action.payload)],
   [actions.decreaseQuantity]: (state, action) => {
-    if (action.payload.quantity === 1) {
+    if (action.payload.quantity < 2) {
       return [...remainingItems(state, action.payload)];
     } else {
       return state.map((item) =>
-        item.cartItemId === action.payload.cartItemId
+        item.productId === action.payload.productId
           ? { ...item, quantity: item.quantity - 1 }
           : item
       );
