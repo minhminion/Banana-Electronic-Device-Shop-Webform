@@ -37,6 +37,10 @@ const handler = (dispatch, props) => ({
       }
     }
   },
+  decreaseQuantity: (item) => {
+    dispatch(decreaseQuantity(item))
+  },
+
   deleteFromCart: (item) => {
     notify({
       message: "Xóa sản phẩm thành công",
@@ -44,6 +48,13 @@ const handler = (dispatch, props) => ({
     });
     dispatch(deleteFromCart(item));
   },
+  deleteAllFromCart: () => {
+    notify({
+      message: "Đã xóa tất sản phẩm",
+      type: "success",
+    });
+    dispatch(deleteAllFromCart());
+  }
 });
 
 export default handler;

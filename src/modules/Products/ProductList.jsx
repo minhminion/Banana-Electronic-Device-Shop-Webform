@@ -137,7 +137,6 @@ const ProductList = (props) => {
                 sideSpaceClass="mr-30"
                 // getSearchByName={getSearchByName}
                 getSortParams={getSortParams}
-                // getFilterTierPrice={getFilterTierPrice}
               />
             </div>
             <div className="col-lg-9 order-1 order-lg-2">
@@ -145,8 +144,7 @@ const ProductList = (props) => {
               <ShopTopbar
                 getLayout={getLayout}
                 productCount={totalPages}
-                // getFilterSortParams={getFilterSortParams}
-                // sortedProductCount={currentData.length}
+ 
               />
 
               {/* shop page content default */}

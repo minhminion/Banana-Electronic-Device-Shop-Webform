@@ -90,13 +90,13 @@ const MenuCart = (props) => {
           </div>
           <div className="shopping-cart-btn btn-hover text-center">
             <Link className="default-btn" to={process.env.PUBLIC_URL + "/cart"}>
-              View currencyRate
+              Xem giỏ hàng
             </Link>
             <Link
               className="default-btn"
               to={process.env.PUBLIC_URL + "/checkout"}
             >
-              Checkout
+              Thanh toán
             </Link>
           </div>
         </Fragment>
