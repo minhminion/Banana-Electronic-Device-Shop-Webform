@@ -17,13 +17,20 @@ const Cart = (props) => {
   const [quantityCount] = useState(1);
   const { pathname } = useLocation();
   let cartTotalPrice = 0;
+  let cartTotalPriceWithOutCombo = 0
 
-  const { addToCart, decreaseQuantity, deleteFromCart, deleteAllFromCart } = useMemo(
-    () => handler(dispatch, props),
-    [dispatch, props]
+  const {
+    addToCart,
+    decreaseQuantity,
+    deleteFromCart,
+    deleteAllFromCart,
+  } = useMemo(() => handler(dispatch, props), [dispatch, props]);
+
+  const { combo, details: cartItems } = useSelector(
+    (state) => state[MODULE_NAME]
   );
 
-  const cartItems = useSelector((state) => state[MODULE_NAME]);
+  cartTotalPrice = combo.reduce((value, item) => value + (item.comboPrice * item.quantity), 0);
 
   return (
     <Fragment>
@@ -59,7 +66,10 @@ const Cart = (props) => {
                       </thead>
                       <tbody>
                         {cartItems.map((cartItem, key) => {
-                          cartTotalPrice += cartItem.totalPrice;
+                          if (!cartItem.comboId) {
+                            cartTotalPrice += cartItem.totalPrice;
+                          }
+                          cartTotalPriceWithOutCombo += cartItem.totalPrice
 
                           return (
                             <tr key={key}>
@@ -98,7 +108,12 @@ const Cart = (props) => {
                                     cartItem.productId
                                   }
                                 >
-                                  {cartItem.product && cartItem.product.name}
+                                  {`${cartItem.product && cartItem.product.name}
+                                  ${
+                                    cartItem.comboId
+                                      ? ` (Combo ${cartItem.comboId})`
+                                      : ""
+                                  }`}
                                 </Link>
                               </td>
 
@@ -112,9 +127,7 @@ const Cart = (props) => {
                                 <div className="cart-plus-minus">
                                   <button
                                     className="dec qtybutton"
-                                    onClick={() =>
-                                      decreaseQuantity(cartItem)
-                                    }
+                                    onClick={() => decreaseQuantity(cartItem)}
                                   >
                                     -
                                   </button>
@@ -127,7 +140,11 @@ const Cart = (props) => {
                                   <button
                                     className="inc qtybutton"
                                     onClick={() =>
-                                      addToCart(cartItem.product, quantityCount)
+                                      addToCart(
+                                        cartItem.product,
+                                        quantityCount,
+                                        cartItem.comboId
+                                      )
                                     }
                                     disabled={
                                       cartItem !== undefined &&
@@ -185,11 +202,13 @@ const Cart = (props) => {
                         </h4>
                       </div>
                       <h5>
-                        Tổng sản phẩm <span>{`${formatNumberToVND(cartTotalPrice)}đ`}</span>
+                        Tổng sản phẩm{" "}
+                        <span>{`${formatNumberToVND(cartTotalPriceWithOutCombo)}đ`}</span>
                       </h5>
 
                       <h4 className="grand-totall-title">
-                        Tổng cộng <span>{`${formatNumberToVND(cartTotalPrice)}đ`}</span>
+                        Tổng cộng{" "}
+                        <span>{`${formatNumberToVND(cartTotalPrice)}đ`}</span>
                       </h4>
                     </Col>
                     <Col span={12}>
@@ -199,11 +218,13 @@ const Cart = (props) => {
                         </h4>
                       </div>
                       <h5>
-                        Tổng sản phẩm <span>{`${formatNumberToVND(cartTotalPrice)}đ`}</span>
+                        Tổng sản phẩm{" "}
+                        <span>{`${formatNumberToVND(cartTotalPriceWithOutCombo)}đ`}</span>
                       </h5>
 
                       <h4 className="grand-totall-title">
-                        Tổng cộng <span>{`${formatNumberToVND(cartTotalPrice)}đ`}</span>
+                        Tổng cộng{" "}
+                        <span>{`${formatNumberToVND(cartTotalPrice)}đ`}</span>
                       </h4>
                     </Col>
                   </Row>

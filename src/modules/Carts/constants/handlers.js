@@ -1,31 +1,31 @@
 import {
-  addToCard,
+  addToCart,
   deleteFromCart,
   deleteAllFromCart,
   decreaseQuantity,
-  addAllToCard,
 } from "./actions";
-import { fetch } from "../../../common/effects";
-import { ENDPOINTS } from "./models";
 import { checkError, notify } from "../../../common/helpers/Notify";
 
 const handler = (dispatch, props) => ({
-  addToCart: async (item, quantityCount, isIncreases) => {
+  addToCart: async (item, quantityCount, isCombos) => {
     try {
-      if (!isIncreases) {
-        notify({
-          message: "Đã thêm sản phầm vào giỏ",
-          type: "success",
-        });
-      }
+      notify({
+        message: "Đã thêm sản phầm vào giỏ",
+        type: "success",
+      });
       dispatch(
-        addToCard({
+        addToCart({
           quantity: quantityCount,
           productId: item.id,
           product: item,
+          isCombos,
         })
       );
     } catch (error) {
+      console.log(
+        "======== Bao Minh ~ file: handlers.js ~ line 30 ~ addToCart: ~ error",
+        error
+      );
       if (error.response && error.response.data) {
         if (error.response.data.errors) {
           checkError(error.response.data.errors);
@@ -33,12 +33,12 @@ const handler = (dispatch, props) => ({
           checkError(error.response.data);
         }
       } else {
-        checkError("Server error !");
+        checkError("Lỗi không xác định !");
       }
     }
   },
   decreaseQuantity: (item) => {
-    dispatch(decreaseQuantity(item))
+    dispatch(decreaseQuantity(item));
   },
 
   deleteFromCart: (item) => {
@@ -54,7 +54,7 @@ const handler = (dispatch, props) => ({
       type: "success",
     });
     dispatch(deleteAllFromCart());
-  }
+  },
 });
 
 export default handler;

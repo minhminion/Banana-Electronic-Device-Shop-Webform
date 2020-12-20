@@ -12,6 +12,11 @@ const NavItem = [
     subMenu: [],
   },
   {
+    menuTitle: "Combo",
+    to: "/combo",
+    subMenu: [],
+  },
+  {
     menuTitle: "Liên hệ",
     to: "/contact",
     subMenu: [],

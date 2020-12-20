@@ -8,11 +8,19 @@ const ProductGrid = ({
   addToCart,
   addToWishlist,
   cartItems,
-  wishlistItems,
   sliderClassName,
   spaceBottomClass,
+  isCombos,
 }) => {
-  const cartId = 1;
+  const getCartItem = (product) => {
+    if (isCombos) {
+      return cartItems.filter((cartItem) => cartItem.comboId === product.id)[0];
+    } else {
+      return cartItems.filter(
+        (cartItem) => cartItem.productId === product.id
+      )[0];
+    }
+  };
 
   return (
     <Fragment>
@@ -20,16 +28,14 @@ const ProductGrid = ({
         return (
           <ProductGridListSingle
             key={product.id}
-            cartId={cartId}
             sliderClassName={sliderClassName}
             spaceBottomClass={spaceBottomClass}
             product={product}
             currency={currency}
             addToCart={addToCart}
             addToWishlist={addToWishlist}
-            cartItem={
-              cartItems.filter((cartItem) => cartItem.productId === product.id)[0]
-            }
+            cartItem={getCartItem(product)}
+            isCombos={isCombos}
             // wishlistItem={
             //   wishlistItems.filter((wishlistItem) => wishlistItem.productTierId === product.productTiers[0].id)[0]
             // }

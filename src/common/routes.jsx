@@ -10,6 +10,7 @@ import { MODULE_NAME as MODULE_AUTHOR } from "../modules/Author/constants/models
 import ProductListPage from "../pages/ProductListPage";
 import ProductDetailsPage from "../pages/ProductDetailsPage";
 import CartPages from "../pages/CartPages";
+import ComboListPage from "../pages/ComboListPage";
 
 const Routes = () => {
   // const USER_ROLE = ENUMS.USER_ROLE;
@@ -19,6 +20,7 @@ const Routes = () => {
     <MainLayout>
       <Switch>
         <Route exact path="/shop" component={ProductListPage} />
+        <Route exact path="/combo" component={ComboListPage} />
         <Route exact path="/cart" component={CartPages} />
         <Route exact path="/product/:id" component={ProductDetailsPage} />
         <AuthRoute

@@ -20,7 +20,7 @@ function ProductModal({
   const { addToCart } = useMemo(() => handler(dispatch, props) ,[dispatch, props])
 
 
-  const cartItems = useSelector(state => state[MODULE_CART ])
+  const {details: cartItems} = useSelector(state => state[MODULE_CART])
 
 
 

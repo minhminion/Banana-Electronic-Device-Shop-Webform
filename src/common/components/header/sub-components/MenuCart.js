@@ -8,18 +8,19 @@ import { formatNumberToVND } from "../../../helpers";
 
 const MenuCart = (props) => {
   let cartTotalPrice = 0;
-  const { cartData, isSigned } = props
-  const dispatch = useDispatch()
+  let cartTotalPriceWithOutCombo = 0;
+  const { combo, cartData, isSigned } = props;
+  const dispatch = useDispatch();
 
-  // if (!isSigned) {
-  //   return (
-  //     <div className="shopping-cart-content">
-  //       <p className="text-center">Vui lòng đăng nhập</p>
-  //     </div>
-  //   );
-  // }
+  const { deleteFromCart } = useMemo(() => handler(dispatch, props), [
+    props,
+    dispatch,
+  ]);
 
-  const { deleteFromCart } = useMemo(() => handler(dispatch, props), [props, dispatch])
+  cartTotalPrice = combo.reduce(
+    (value, item) => value + item.comboPrice * item.quantity,
+    0
+  );
 
   return (
     <div className="shopping-cart-content">
@@ -27,9 +28,11 @@ const MenuCart = (props) => {
         <Fragment>
           <ul>
             {cartData.map((single, key) => {
-              const finalDiscountedPrice = single.product?.price
-
-              cartTotalPrice += finalDiscountedPrice * single.quantity;
+              const finalDiscountedPrice = single.unitPrice;
+              if (!single.comboId) {
+                cartTotalPrice += single.totalPrice;
+              }
+              cartTotalPriceWithOutCombo += single.totalPrice
 
               return (
                 <li className="single-shopping-cart" key={key}>
@@ -42,12 +45,9 @@ const MenuCart = (props) => {
                       <img
                         alt=""
                         src={
-                          single.product?.productImages 
+                          single.product?.productImages
                             ? DEFAULT_IMG_URL +
-                              single.product.productImages.replace(
-                                "\\",
-                                "/"
-                              )
+                              single.product.productImages.replace("\\", "/")
                             : process.env.PUBLIC_URL + "/img/products/3.jpg"
                         }
                         className="img-fluid"
@@ -66,10 +66,9 @@ const MenuCart = (props) => {
                         {`${single.product?.name}`}
                       </Link>
                     </h4>
+                    {single.comboId && <h6>Combo: {single.comboId}</h6>}
                     <h6>Số lượng: {single.quantity}</h6>
-                    <span>
-                      {`${formatNumberToVND(finalDiscountedPrice)}đ`}
-                    </span>
+                    <span>{`${formatNumberToVND(finalDiscountedPrice)}đ`}</span>
                   </div>
                   <div className="shopping-cart-delete">
                     <button onClick={() => deleteFromCart(single)}>
@@ -82,7 +81,13 @@ const MenuCart = (props) => {
           </ul>
           <div className="shopping-cart-total">
             <h4>
-              Total :{" "}
+              Tổng sản phẩm :{" "}
+              <span className="shop-total">
+                {`${formatNumberToVND(cartTotalPriceWithOutCombo)}đ`}
+              </span>
+            </h4>
+            <h4>
+              Tổng tiền :{" "}
               <span className="shop-total">
                 {`${formatNumberToVND(cartTotalPrice)}đ`}
               </span>

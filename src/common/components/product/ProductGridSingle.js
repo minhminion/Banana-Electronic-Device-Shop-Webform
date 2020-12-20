@@ -28,8 +28,6 @@ const ProductGridSingle = ({
       ? state.user.user.customer.cart.id
       : null
   );
-
-  const rating = Math.round((product.productTier1AverageRate+product.productTier2AverageRate)/2)
   // THIS GET DISCOUNT BY %
   // const discountedPrice = getDiscountPrice(product.salePrice, product.price);
   const discountedPrice = product.salePrice;
