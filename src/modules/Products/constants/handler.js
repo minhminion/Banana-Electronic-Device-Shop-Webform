@@ -37,10 +37,10 @@ const handler = (dispatch, props) => ({
       if (response.data && response.status === 200) {
         return response.data.data;
       } else {
-        return "Lỗi không xác định !";
+        return false
       }
     } catch (error) {
-      return error?.response?.data?.ApiErr;
+      return false
     }
   },
 
