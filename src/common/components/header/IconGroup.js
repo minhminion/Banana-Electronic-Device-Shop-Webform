@@ -10,22 +10,21 @@ import { clearAll } from "../../redux/actions/uiActions";
 
 const { Text } = Typography;
 
-const IconGroup = ({
-  currency,
-  wishlistData,
-  iconWhiteClass,
-  user,
-}) => {
-  const dispatch = useDispatch()
+const IconGroup = ({ currency, wishlistData, iconWhiteClass, user }) => {
+  const dispatch = useDispatch();
 
-  const { isSigned, roleName, info } = useSelector((state) => state[MODULE_AUTHOR]);
-  
-  const cartData = useSelector(state => state[MODULE_CART])
+  const { isSigned, roleName, info } = useSelector(
+    (state) => state[MODULE_AUTHOR]
+  );
+
+  const { combo, details: cartData } = useSelector(
+    (state) => state[MODULE_CART]
+  );
 
   const signOut = () => {
-    dispatch(clearAll())
-  }
-  
+    dispatch(clearAll());
+  };
+
   const handleClick = (e) => {
     e.currentTarget.nextSibling.classList.toggle("active");
   };
@@ -53,7 +52,7 @@ const IconGroup = ({
           onClick={(e) => handleClick(e)}
         >
           <i className="pe-7s-user-female" />
-          { isSigned && info ? (
+          {isSigned && info ? (
             <Text style={{ marginLeft: 5, fontSize: 14 }}>
               {`Chào, ${info?.lastName} ${info?.firstName}`}
             </Text>
@@ -100,6 +99,7 @@ const IconGroup = ({
         </button>
         {/* menu cart */}
         <MenuCart
+          combo={combo}
           isSigned={isSigned}
           cartData={cartData}
           currency={currency}
@@ -131,6 +131,5 @@ IconGroup.propTypes = {
   iconWhiteClass: PropTypes.string,
   deleteFromCart: PropTypes.func,
 };
-
 
 export default IconGroup;

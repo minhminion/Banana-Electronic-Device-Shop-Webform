@@ -16,9 +16,9 @@ import ShopProducts from "../../common/wrappers/ShopProducts";
 import handler from "./constants/handler";
 import { animateScroll } from "react-scroll";
 
-const LIMIT_PER_PAGE = 8
+const LIMIT_PER_PAGE = 8;
 
-const ProductList = (props) => {
+const ComboList = (props) => {
   const location = useLocation();
   const history = useHistory();
 
@@ -29,20 +29,16 @@ const ProductList = (props) => {
   });
 
   const dispatch = useDispatch();
-  const { getProductCategories, fetchProduct } = useMemo(
-    () => handler(dispatch, props),
-    [props, dispatch]
-  );
+  const { fetchCombo } = useMemo(() => handler(dispatch, props), [
+    props,
+    dispatch,
+  ]);
 
   const {
-    data: { data: productsData, currentPage, totalPages, totalItems = 0 },
+    data: { data: combosData, currentPage, totalPages, totalItems = 0 },
     categories: { data: categoriesData },
   } = useSelector((state) => state[MODULE_NAME]);
   const { details: cartData } = useSelector((state) => state[MODULE_CART]);
-
-  useEffect(() => {
-    getProductCategories();
-  }, []);
 
   useEffect(() => {
     if (location.search) {
@@ -54,7 +50,7 @@ const ProductList = (props) => {
 
   useEffect(() => {
     if (filter) {
-      fetchProduct({
+      fetchCombo({
         ...filter,
         limit: LIMIT_PER_PAGE,
       });
@@ -75,7 +71,6 @@ const ProductList = (props) => {
   const getLayout = (layout) => {
     setLayout(layout);
   };
-
 
   const handlePagination = (newPage) => {
     history.push({
@@ -141,31 +136,30 @@ const ProductList = (props) => {
             </div>
             <div className="col-lg-9 order-1 order-lg-2">
               {/* shop topbar default */}
-              <ShopTopbar
-                getLayout={getLayout}
-                productCount={totalPages}
- 
-              />
+              <ShopTopbar getLayout={getLayout} productCount={totalPages} />
 
               {/* shop page content default */}
-              <ShopProducts layout={layout} products={productsData || []} carts={cartData}/>
+              <ShopProducts
+                layout={layout}
+                products={combosData || []}
+                carts={cartData}
+                isCombos={true}
+              />
 
               {/* shop product pagination */}
               <div className="pro-pagination-style text-center mt-30">
                 <Paginator
-                    offset={3}
-                    totalRecords={totalItems}
-                    pageLimit={LIMIT_PER_PAGE}
-                    setOffset={(value) =>
-                      console.log(value)
-                    }
-                    pageNeighbours={2}
-                    currentPage={currentPage}
-                    setCurrentPage={handlePagination}
-                    pageContainerClass="mb-0 mt-0"
-                    pagePrevText="«"
-                    pageNextText="»"
-                  />
+                  offset={3}
+                  totalRecords={totalItems}
+                  pageLimit={LIMIT_PER_PAGE}
+                  setOffset={(value) => console.log(value)}
+                  pageNeighbours={2}
+                  currentPage={currentPage}
+                  setCurrentPage={handlePagination}
+                  pageContainerClass="mb-0 mt-0"
+                  pagePrevText="«"
+                  pageNextText="»"
+                />
               </div>
             </div>
           </div>
@@ -175,4 +169,4 @@ const ProductList = (props) => {
   );
 };
 
-export default ProductList;
+export default ComboList;

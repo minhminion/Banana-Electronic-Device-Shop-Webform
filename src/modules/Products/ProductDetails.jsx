@@ -23,9 +23,12 @@ const ProductDetails = (props) => {
     props,
   ]);
 
-  const { addToCart } = useMemo(() => cartHandler(dispatch, props), [dispatch, props])
+  const { addToCart } = useMemo(() => cartHandler(dispatch, props), [
+    dispatch,
+    props,
+  ]);
 
-  const cartItems = useSelector((state) => state[MODULE_CART]);
+  const { details: cartItems } = useSelector((state) => state[MODULE_CART]);
 
   const [product, setProduct] = useState({});
 
@@ -46,7 +49,7 @@ const ProductDetails = (props) => {
   }, [id]);
 
   if (!product) {
-    return null
+    return null;
   }
 
   return (
@@ -66,13 +69,13 @@ const ProductDetails = (props) => {
       {product && product.id ? (
         <>
           <ProductImageDescription
-              galleryType="leftThumb"
-              spaceTopClass="pt-100"
-              spaceBottomClass="pb-100"
-              product={product}
-              cartItems={cartItems}
-              addToCart={addToCart}
-            />
+            galleryType="leftThumb"
+            spaceTopClass="pt-100"
+            spaceBottomClass="pb-100"
+            product={product}
+            cartItems={cartItems}
+            addToCart={addToCart}
+          />
         </>
       ) : (
         ""

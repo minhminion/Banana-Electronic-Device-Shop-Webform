@@ -13,9 +13,8 @@ import { formatNumberToVND } from "../../helpers";
 
 const ProductGridListSingle = (props) => {
   const {
-    cartId,
     product,
-    currency,
+    isCombos,
     addToWishlist,
     cartItem,
     wishlistItem,
@@ -24,10 +23,6 @@ const ProductGridListSingle = (props) => {
   } = props
   const [modalShow, setModalShow] = useState(false);
   const dispatch = useDispatch()
-
-  const rating = Math.round(
-    (product.productTier1AverageRate + product.productTier2AverageRate) / 2
-  );
 
   const { addToCart } = useMemo(() => handler(dispatch, props), [props, dispatch]);
 
@@ -87,7 +82,7 @@ const ProductGridListSingle = (props) => {
                       ? "Đã thêm vào giỏ"
                       : "Thêm vào giỏ"
                   }
-                  onClick={() => addToWishlist(product)}
+                  // onClick={() => addToWishlist(product)}
                 >
                   {wishlistItem ? (
                     <HeartFilled style={{ color: "#DC143C" }} />
@@ -97,15 +92,15 @@ const ProductGridListSingle = (props) => {
                 </button>
               </div>
               <div className="pro-same-action pro-cart">
-                {product.quantity && product.quantity > 0 ? (
+                {isCombos || (product.quantity && product.quantity) > 0 ? (
                   <button
-                    onClick={() => addToCart(product, 1, cartId)}
+                    onClick={() => addToCart(product, 1, isCombos)}
                     className={
-                      cartItem !== undefined && cartItem.quantity > 0
+                      cartItem !== undefined && (isCombos || cartItem.quantity > 0)
                         ? "active"
                         : ""
                     }
-                    disabled={cartItem !== undefined && cartItem.quantity > 0}
+                    disabled={cartItem !== undefined && (isCombos || cartItem.quantity > 0)}
                     title={
                       cartItem !== undefined
                         ? "Added to cart"
@@ -114,7 +109,7 @@ const ProductGridListSingle = (props) => {
                   >
                     {" "}
                     <i className="pe-7s-cart"></i>{" "}
-                    {cartItem !== undefined && cartItem.quantity > 0
+                    {cartItem !== undefined && (isCombos || cartItem.quantity > 0)
                       ? "Đã thêm vào giỏ"
                       : "Thêm vào giỏ"}
                   </button>
@@ -137,20 +132,12 @@ const ProductGridListSingle = (props) => {
                 {product.name}
               </Link>
             </h3>
-            {/* {rating  >= 0 ? (
-              <div className="product-rating">
-                <Rate value={rating  }  disabled/>
-              </div>
-            ) : (
-              <div className="product-rating">
-                <Rate value={4}  disabled/>
-              </div>
-            )} */}
             <div className="product-price">
               <span>{`${formatNumberToVND(product.price)}đ`}</span>
             </div>
           </div>
         </div>
+        {/*  */}
         <div className="shop-list-wrap mb-30">
           <div className="row">
             <div className="col-xl-4 col-md-5 col-sm-6">
@@ -241,12 +228,12 @@ const ProductGridListSingle = (props) => {
                           )
                         }
                         className={
-                          cartItem !== undefined && cartItem.quantity > 0
+                          cartItem !== undefined && (isCombos || cartItem.quantity > 0)
                             ? "active"
                             : ""
                         }
                         disabled={
-                          cartItem !== undefined && cartItem.quantity > 0
+                          cartItem !== undefined && (isCombos || cartItem.quantity > 0)
                         }
                         title={
                           cartItem !== undefined
@@ -256,7 +243,7 @@ const ProductGridListSingle = (props) => {
                       >
                         {" "}
                         <i className="pe-7s-cart"></i>{" "}
-                        {cartItem !== undefined && cartItem.quantity > 0
+                        {cartItem !== undefined && (isCombos || cartItem.quantity > 0)
                           ? "Đã thêm vào giỏ"
                           : "Thêm vào giỏ"}
                       </button>
