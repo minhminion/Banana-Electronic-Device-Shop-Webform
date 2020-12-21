@@ -115,7 +115,7 @@ const defaultState = {
 };
 
 const handler = {
-  [clearAll]: (state, action) => [...defaultState],
+  [clearAll]: (state, action) => defaultState,
   [actions.addToCart]: (state, action) =>
     addCart(state, state.details, action.payload),
   [actions.decreaseQuantity]: (state, action) => {

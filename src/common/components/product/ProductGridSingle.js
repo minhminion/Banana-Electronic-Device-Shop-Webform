@@ -189,6 +189,7 @@ const ProductGridSingle = ({
       </div>
       {/* product modal */}
       <ProductModal
+        key={product.id}
         show={modalShow}
         onHide={() => setModalShow(false)}
         product={product}

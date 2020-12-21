@@ -8,25 +8,22 @@ import { MODULE_NAME as MODULE_CART } from "../../../modules/Carts/constants/mod
 import { useDispatch, useSelector } from "react-redux";
 import handler from "../../../modules/Carts/constants/handlers";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
-function ProductModal({
-  product,
-  wishlistItem,
-  ...props
-}) {
-  const dispatch = useDispatch()
+function ProductModal({ product, wishlistItem, isCombo, ...props }) {
+  const dispatch = useDispatch();
 
   const [quantityCount, setQuantityCount] = useState(1);
-  const { addToCart } = useMemo(() => handler(dispatch, props) ,[dispatch, props])
+  const { addToCart } = useMemo(() => handler(dispatch, props), [
+    dispatch,
+    props,
+  ]);
 
-
-  const {details: cartItems} = useSelector(state => state[MODULE_CART])
-
-
+  const { details: cartItems } = useSelector((state) => state[MODULE_CART]);
 
   const handleAddToCart = (product, quantityCount, cartId, selectedTier) => {
     setQuantityCount(1);
-    addToCart(product, quantityCount);
+    addToCart(product, quantityCount, isCombo && product.id);
     props.onHide();
   };
   const addToWishlist = props.addtowishlist;
@@ -62,10 +59,7 @@ function ProductModal({
                 <h2>{product.name}</h2>
                 <div className="product-details-price">
                   <Space direction="vertical">
-                    <span> Loại {product.unit}:</span>
-                    <span>
-                     {formatNumberToVND(product.price)}đ
-                    </span>
+                    <span>Giá: {formatNumberToVND(product.price)}đ</span>
                   </Space>
                 </div>
                 {/* {rating  >= 0 ? (
@@ -82,7 +76,28 @@ function ProductModal({
                   </div>
                 )} */}
                 <div className="pro-details-list">
-                  <p>{product.description}</p>
+                  {isCombo ? (
+                    <>
+                      <h5>
+                        <strong>Chi tiết combo: </strong>
+                      </h5>
+                      <ul>
+                        {product.comboDetails.map((item) => (
+                          <Link
+                            to={
+                              process.env.PUBLIC_URL +
+                              "/product/" +
+                              item.productId
+                            }
+                          >
+                            <li>+ {item?.product.name}</li>
+                          </Link>
+                        ))}
+                      </ul>
+                    </>
+                  ) : (
+                    product.description && <p>{product?.description}</p>
+                  )}
                 </div>
                 <div className="pro-details-quality">
                   <div className="cart-plus-minus">
@@ -105,8 +120,9 @@ function ProductModal({
                     <button
                       onClick={() =>
                         setQuantityCount(
-                          quantityCount <
-                            Math.floor(product.quantity) - productCartQty
+                          isCombo ||
+                            quantityCount <
+                              Math.floor(product.quantity) - productCartQty
                             ? quantityCount + 1
                             : quantityCount
                         )
@@ -117,22 +133,22 @@ function ProductModal({
                     </button>
                   </div>
                   <div className="pro-details-cart btn-hover">
-                    {product.quantity && Math.floor(product.quantity) > 0 ? (
+                    {isCombo ||
+                    (product.quantity && Math.floor(product.quantity) > 0) ? (
                       <button
-                        onClick={() => {
-                          handleAddToCart(
-                            product,
-                            quantityCount,
-                          );
-                        }}
-                        disabled={productCartQty >= product.quantity}
+                        onClick={() => handleAddToCart(product, quantityCount)}
+                        disabled={
+                          !isCombo &&
+                          Math.floor(product.quantity) <= productCartQty
+                        }
                       >
-                        {productCartQty >= product.quantity
-                          ? "Hết hàng"
-                          : "Thêm vào giỏ"}
+                        {isCombo ||
+                        Math.floor(product.quantity) > productCartQty
+                          ? "Thêm vào giỏ"
+                          : "Hết hàng"}
                       </button>
                     ) : (
-                      <button disabled>Out of Stock</button>
+                      <button disabled>Hết hàng</button>
                     )}
                   </div>
                   <div className="pro-details-wishlist">

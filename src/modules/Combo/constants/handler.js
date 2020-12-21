@@ -27,10 +27,10 @@ const handler = (dispatch, props) => ({
       dispatch(fetchCombosFailure(error?.response?.data?.ApiErr));
     }
   },
-  fetchSingleCombo: async (ComboId) => {
+  fetchSingleCombo: async (comboId) => {
     try {
       const response = await fetch({
-        url: ENDPOINTS.getSingleCombo(ComboId),
+        url: ENDPOINTS.getSingleCombo(comboId),
         method: "GET",
       });
       if (response.data && response.status === 200) {

@@ -8,9 +8,8 @@ const ProductImageDescription = ({
   product,
   cartItems,
   addToCart,
+  isCombo
 }) => {
-
-  
 
   return (
     <div
@@ -33,6 +32,7 @@ const ProductImageDescription = ({
             {/* product description info */}
             <ProductDescriptionInfo
               product={product}
+              isCombo={isCombo}
               cartItems={cartItems}
               addToCart={addToCart}
             />

@@ -11,6 +11,9 @@ import ProductListPage from "../pages/ProductListPage";
 import ProductDetailsPage from "../pages/ProductDetailsPage";
 import CartPages from "../pages/CartPages";
 import ComboListPage from "../pages/ComboListPage";
+import CheckoutPage from "../pages/CheckoutPage";
+import ComboDetailsPage from "../pages/ComboDetailsPage";
+import HomePage from "../pages/HomePage";
 
 const Routes = () => {
   // const USER_ROLE = ENUMS.USER_ROLE;
@@ -21,7 +24,15 @@ const Routes = () => {
       <Switch>
         <Route exact path="/shop" component={ProductListPage} />
         <Route exact path="/combo" component={ComboListPage} />
+        <Route exact path="/combo/:comboId" component={ComboDetailsPage} />
         <Route exact path="/cart" component={CartPages} />
+        <AuthRoute
+          exact
+          path="/checkout"
+          component={CheckoutPage}
+          condition={isSigned}
+          to="/login-register"
+        />
         <Route exact path="/product/:id" component={ProductDetailsPage} />
         <AuthRoute
           exact
@@ -29,7 +40,8 @@ const Routes = () => {
           component={LoginRegisterPage}
           condition={!isSigned}
           to="/"
-          />
+        />
+        <Route exact path="/" component={HomePage} />
         {/* 404 Not Found */}
         <Route exact path="*" component={NotFoundPage} />
       </Switch>
