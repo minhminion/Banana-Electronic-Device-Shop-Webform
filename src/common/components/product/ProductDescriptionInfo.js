@@ -1,20 +1,15 @@
 import PropTypes from "prop-types";
-import React, { useState} from "react";
-import { useSelector } from "react-redux";
-import parser from "html-react-parser"
-import {
-  getProductCartQuantity,
-} from "../../../common/helpers/product";
+import React, { useState } from "react";
+import { getProductCartQuantity } from "../../../common/helpers/product";
 import { Space, Rate } from "antd";
 import { formatNumberToVND } from "../../helpers";
+import { Link } from "react-router-dom";
 
-const ProductDescriptionInfo = ({
-  product,
-  cartItems,
-  addToCart,
-}) => {
+const ProductDescriptionInfo = ({ product, cartItems, addToCart, isCombo }) => {
 
-  const rating = Math.round((product.productTier1AverageRate+product.productTier2AverageRate)/2)
+  const rating = Math.round(
+    (product.productTier1AverageRate + product.productTier2AverageRate) / 2
+  );
 
   const [quantityCount, setQuantityCount] = useState(1);
 
@@ -28,21 +23,34 @@ const ProductDescriptionInfo = ({
           <span>{`${formatNumberToVND(product.price)}đ`}</span>
         </Space>
       </div>
-      {rating  >= 0 ? (
+      {rating >= 0 ? (
         <div className="pro-details-rating-wrap">
           <div className="pro-details-rating">
-            <Rate value={rating  }  disabled/>
+            <Rate value={rating} disabled />
           </div>
         </div>
       ) : (
         <div className="pro-details-rating-wrap">
           <div className="pro-details-rating">
-            <Rate value={4  }  disabled/>
+            <Rate value={4} disabled />
           </div>
         </div>
       )}
       <div className="pro-details-list">
-        <p>{product.description}</p>
+        {isCombo ? (
+          <>
+          <h5><strong>Chi tiết combo: </strong></h5>
+          <ul>
+            {product.comboDetails.map((item) => (
+              <Link to={process.env.PUBLIC_URL + "/product/" + item.productId}>
+                <li>+ {item?.product.name}</li>
+              </Link>
+            ))}
+          </ul>
+          </>
+        ) : (
+          product.description && <p>{product?.description}</p>
+        )}
       </div>
       <div className="pro-details-quality">
         <div className="cart-plus-minus">
@@ -63,7 +71,8 @@ const ProductDescriptionInfo = ({
           <button
             onClick={() =>
               setQuantityCount(
-                quantityCount < Math.floor(product.quantity) - productCartQty
+                isCombo ||
+                  quantityCount < Math.floor(product.quantity) - productCartQty
                   ? quantityCount + 1
                   : quantityCount
               )
@@ -74,16 +83,16 @@ const ProductDescriptionInfo = ({
           </button>
         </div>
         <div className="pro-details-cart btn-hover">
-          {product.quantity && product.quantity > 0 ? (
+          {isCombo || (product.quantity && product.quantity > 0) ? (
             <button
-              onClick={() =>
-                addToCart(product, quantityCount)
+              onClick={() => addToCart(product, quantityCount, isCombo && product.id)}
+              disabled={
+                !isCombo && Math.floor(product.quantity) <= productCartQty
               }
-              disabled={productCartQty >= Math.floor(product.quantity)}
             >
-              {productCartQty >= Math.floor(product.quantity)
-                ? "Hết hàng"
-                : "Thêm vào giỏ"}
+              {isCombo ||  Math.floor(product.quantity) > productCartQty
+                ? "Thêm vào giỏ"
+                : "Hết hàng"}
             </button>
           ) : (
             <button disabled>Hết hàng</button>
@@ -135,7 +144,5 @@ ProductDescriptionInfo.propTypes = {
   product: PropTypes.object,
   wishlistItem: PropTypes.object,
 };
-
-
 
 export default ProductDescriptionInfo;

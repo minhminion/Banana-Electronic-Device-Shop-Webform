@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "image": "/img/icon-img/support-1.png",
+    "title": "Miễn phí vận chuyển",
+    "subtitle": "Free shipping với mọi hóa đơn"
+  },
+  {
+    "id": 2,
+    "image": "/img/icon-img/support-2.png",
+    "title": "Hỗ trợ 24/7",
+    "subtitle": "Đội ngũ chăm sóc khách hàng hỗ trợ 24/7"
+  },
+  {
+    "id": 3,
+    "image": "/img/icon-img/support-3.png",
+    "title": "Trả hàng / Hoàn tiền",
+    "subtitle": "Đổi trả trong vòng 2 ngày từ khi nhận sản phẩm"
+  },
+  {
+    "id": 4,
+    "image": "/img/icon-img/support-4.png",
+    "title": "Ưu đãi đặc biệt",
+    "subtitle": "Giảm giá hóa đơn đối với khách hàng thân thiết"
+  }
+]

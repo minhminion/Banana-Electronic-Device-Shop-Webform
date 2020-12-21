@@ -20,12 +20,14 @@ const ProductGridListSingle = (props) => {
     wishlistItem,
     sliderClassName,
     spaceBottomClass,
-  } = props
+  } = props;
   const [modalShow, setModalShow] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const { addToCart } = useMemo(() => handler(dispatch, props), [props, dispatch]);
-
+  const { addToCart } = useMemo(() => handler(dispatch, props), [
+    props,
+    dispatch,
+  ]);
 
   return (
     <Fragment key={product.id}>
@@ -38,7 +40,13 @@ const ProductGridListSingle = (props) => {
           className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}
         >
           <div className="product-img">
-            <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+            <Link
+              to={
+                process.env.PUBLIC_URL +
+                `${isCombos ? "/combo/" : "/product/"}` +
+                product.id
+              }
+            >
               <img
                 className="default-img"
                 src={
@@ -96,20 +104,23 @@ const ProductGridListSingle = (props) => {
                   <button
                     onClick={() => addToCart(product, 1, isCombos)}
                     className={
-                      cartItem !== undefined && (isCombos || cartItem.quantity > 0)
+                      cartItem !== undefined &&
+                      (isCombos || cartItem.quantity > 0)
                         ? "active"
                         : ""
                     }
-                    disabled={cartItem !== undefined && (isCombos || cartItem.quantity > 0)}
+                    disabled={
+                      cartItem !== undefined &&
+                      (isCombos || cartItem.quantity > 0)
+                    }
                     title={
-                      cartItem !== undefined
-                        ? "Added to cart"
-                        : "Thêm vào giỏ"
+                      cartItem !== undefined ? "Added to cart" : "Thêm vào giỏ"
                     }
                   >
                     {" "}
                     <i className="pe-7s-cart"></i>{" "}
-                    {cartItem !== undefined && (isCombos || cartItem.quantity > 0)
+                    {cartItem !== undefined &&
+                    (isCombos || cartItem.quantity > 0)
                       ? "Đã thêm vào giỏ"
                       : "Thêm vào giỏ"}
                   </button>
@@ -128,7 +139,13 @@ const ProductGridListSingle = (props) => {
           </div>
           <div className="product-content text-center">
             <h3>
-              <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+              <Link
+                to={
+                  process.env.PUBLIC_URL +
+                  `${isCombos ? "/combo/" : "/product/"}` +
+                  product.id
+                }
+              >
                 {product.name}
               </Link>
             </h3>
@@ -143,7 +160,13 @@ const ProductGridListSingle = (props) => {
             <div className="col-xl-4 col-md-5 col-sm-6">
               <div className="product-list-image-wrap">
                 <div className="product-img">
-                  <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+                  <Link
+                    to={
+                      process.env.PUBLIC_URL +
+                      `${isCombos ? "/combo/" : "/product/"}` +
+                      product.id
+                    }
+                  >
                     <img
                       className="default-img img-fluid"
                       src={
@@ -192,7 +215,13 @@ const ProductGridListSingle = (props) => {
             <div className="col-xl-8 col-md-7 col-sm-6">
               <div className="shop-list-content">
                 <h3>
-                  <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+                  <Link
+                    to={
+                      process.env.PUBLIC_URL +
+                      `${isCombos ? "/combo/" : "/product/"}` +
+                      product.id
+                    }
+                  >
                     {product.name}
                   </Link>
                 </h3>
@@ -214,26 +243,45 @@ const ProductGridListSingle = (props) => {
                     </div>
                   </div>
                 )} */}
-                {product.description ? <p>{product.description}</p> : ""}
-
+                <div className="mb-3">
+                  {isCombos ? (
+                    <>
+                      <h5>
+                        <strong>Chi tiết combo: </strong>
+                      </h5>
+                      <ul>
+                        {product.comboDetails.map((item) => (
+                          <Link
+                            to={
+                              process.env.PUBLIC_URL +
+                              "/product/" +
+                              item.productId
+                            }
+                          >
+                            <li>+ {item?.product.name}</li>
+                          </Link>
+                        ))}
+                      </ul>
+                    </>
+                  ) : (
+                    product.description && <p>{product?.description}</p>
+                  )}
+                </div>
                 <div className="shop-list-actions d-flex align-items-center">
                   <div className="shop-list-btn btn-hover">
-                    {product.quantity && product.quantity > 0 ? (
+                    {isCombos || (product.quantity && product.quantity > 0) ? (
                       <button
                         key={product.id}
-                        onClick={() =>
-                          addToCart(
-                            product,
-                            1,
-                          )
-                        }
+                        onClick={() => addToCart(product, 1)}
                         className={
-                          cartItem !== undefined && (isCombos || cartItem.quantity > 0)
+                          cartItem !== undefined &&
+                          (isCombos || cartItem.quantity > 0)
                             ? "active"
                             : ""
                         }
                         disabled={
-                          cartItem !== undefined && (isCombos || cartItem.quantity > 0)
+                          cartItem !== undefined &&
+                          (isCombos || cartItem.quantity > 0)
                         }
                         title={
                           cartItem !== undefined
@@ -243,7 +291,8 @@ const ProductGridListSingle = (props) => {
                       >
                         {" "}
                         <i className="pe-7s-cart"></i>{" "}
-                        {cartItem !== undefined && (isCombos || cartItem.quantity > 0)
+                        {cartItem !== undefined &&
+                        (isCombos || cartItem.quantity > 0)
                           ? "Đã thêm vào giỏ"
                           : "Thêm vào giỏ"}
                       </button>
@@ -262,7 +311,7 @@ const ProductGridListSingle = (props) => {
                           ? "Đã thêm vào giỏ"
                           : "Thêm vào giỏ"
                       }
-                      onClick={() => addToWishlist(product)}
+                      // onClick={() => addToWishlist(product)}
                     >
                       {wishlistItem ? (
                         <HeartFilled style={{ color: "#DC143C" }} />
@@ -280,6 +329,7 @@ const ProductGridListSingle = (props) => {
       {/* product modal */}
       <ProductModal
         show={modalShow}
+        isCombo={isCombos}
         onHide={() => setModalShow(false)}
         product={product}
         cartItem={cartItem}
