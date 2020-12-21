@@ -1,16 +1,16 @@
 [
-    {
-      "id": 1,
-      "title": "Giới thiệu",
-      "subtitle": "Mùa hè thanh lọc cơ thể cùng Banana Boys",
-      "image": "/img/slider/banner-1.png",
-      "url": "/shop"
-    },
-    {
-      "id": 2,
-      "title": "Sản phẩm nổi bật",
-      "subtitle": "Sản phẩm mới nhất đến từ Úc",
-      "image": "/img/slider/banner-2.png",
-      "url": "/shop"
-    }
-  ]
+  {
+    "id": 1,
+    "title": "Giới thiệu",
+    "subtitle": "Mùa hè thanh lọc cơ thể cùng Banana Boys",
+    "image": "/img/slider/banner-1.png",
+    "url": "/shop"
+  },
+  {
+    "id": 2,
+    "title": "Sản phẩm nổi bật",
+    "subtitle": "Sản phẩm mới nhất đến từ Úc",
+    "image": "/img/slider/banner-2.png",
+    "url": "/shop"
+  }
+]
